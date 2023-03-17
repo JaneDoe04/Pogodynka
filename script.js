@@ -11,11 +11,16 @@ const images = document.querySelectorAll(".img");
 const section2 = document.querySelector("#section1");
 const explaination_box = document.querySelector(".explanation_box");
 const sections = document.querySelectorAll("section");
+const logout_btn = document.querySelector(".logout");
+const user_name = document.querySelector("h5");
 window.addEventListener("load", () =>
   document.querySelector("#section1").classList.remove("first")
 );
 class App {
   #users = [];
+  #map;
+  #map_event;
+  #map_zoom_level = 15;
   explanation = `<div class="explanation_box">Haslo musi zawierać conajmniej 8 znaków, jedną wielką literę, jedną małą literę oraz conajmniej 1 cyfrę.</div>`;
   registration = `<div class="login_row"> <div class="single_login_row"><h3>Login</h3> </div><input class="login_data login_input" type="text"></div>
   <div class="login_row"><div class="single_login_row"><h3>E-mail</h3></div> <input class="login_data email_input"  type="text"></div>
@@ -28,20 +33,53 @@ class App {
   <div class='error'></div>
   <div class="login_row"><div class="single_login_row"><h3>Hasło<sup class="explaination">*</sup></h3></div> <input class="login_data"  type="password"></div>
   <input type="submit" value="Zaloguj się!" class="submiter btn">`;
-  is_window_opened = true;
+
   constructor() {
-    this.#getLocalStorage();
     sections.forEach((section) => this.section_observer.observe(section));
     images.forEach((img) => this.imgObserver.observe(img));
     unmaring.addEventListener("click", this.open_modal_window.bind(this));
     blur.addEventListener("click", this.close_modal_window);
-    btns.forEach((el) =>
-      el.addEventListener("click", this.open_modal_window.bind(this))
-    );
+    btns.forEach((el) => {
+      if (!el.classList.contains("logout"))
+        el.addEventListener("click", this.open_modal_window.bind(this));
+    });
     section_scroll.forEach((el) => el.addEventListener("click", this.skip_to));
     scroll_down.addEventListener("click", this.skip_to);
     navigation_bar.addEventListener("mouseover", this.text_shadowing);
     navigation_bar.addEventListener("mouseout", this.text_unshadowing);
+    logout_btn.addEventListener("click", this.logOuting);
+    this.#getLocalStorage();
+  }
+  //
+  //
+  //dodawanie mapy do diva dla zalogowanych
+  _get_Position() {
+    if (navigator.geolocation)
+      navigator.geolocation.getCurrentPosition(
+        this._loadMap.bind(this),
+        function () {
+          alert("Could not get your position");
+        }
+      );
+  }
+  _loadMap(position) {
+    const { latitude } = position.coords;
+    const { longitude } = position.coords;
+
+    const coords = [latitude, longitude];
+
+    this.#map = L.map("map").setView(coords, this.#map_zoom_level);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(this.#map);
+    this.#map.on("click", this._showForm.bind(this));
+  }
+  _showForm(mapE) {
+    this.#map_event = mapE;
+    form.classList.remove("hidden");
+    inputDistance.focus();
   }
   //
   //
@@ -138,9 +176,10 @@ class App {
       this.filling_window(e.target);
       blur.style.display = "block";
       account_window.style.display = "flex";
-      document
-        .querySelector(".submiter")
-        .addEventListener("click", this.login_validation.bind(this));
+      if (e.target.classList.contains("registration"))
+        document
+          .querySelector(".submiter")
+          .addEventListener("click", this.login_validation.bind(this));
     }
   }
 
@@ -154,6 +193,7 @@ class App {
   //
   // PROCES TWORZENIA KONTA
   check_login() {
+    console.log(document.querySelector(".login_input"));
     const login = document.querySelector(".login_input").value;
     if (login.length < 8) return "Podany login ma mniej niż 8 znaków";
     if (this.#users.find((user) => user.login === login))
@@ -261,17 +301,37 @@ class App {
     ];
     const user = this.#users.find((el) => el.login === user_login);
     if (user_paswword === user.password) {
-      document.querySelector(".logged").style.display = "flex";
-      this.close_modal_window();
+      this._logged_window(user);
     }
   }
+  _logged_window(user) {
+    document.querySelector(".logged").style.display = "flex";
+    this.close_modal_window();
+    btns.forEach((el) => (el.style.display = "none"));
+    logout_btn.style.display = "block";
+    logout_btn.removeEventListener("click", this.open_modal_window.bind(this));
+    this._get_Position();
+    this.name_filling(user);
+  }
+  name_filling(user) {
+    user_name.textContent = `Witaj, ${user.login}`;
+  }
+  logOuting() {
+    btns.forEach((el) => (el.style.display = "block"));
+    logout_btn.style.display = "none";
+    document.querySelector(".logged").style.display = "none";
+  }
+  //
+  //
 }
+
 const app = new App();
 class User {
   id = Date.now();
   // #login;
   // #email;
-  // #password;
+  // #password; nie moge ustawic tych zmiennych na prywatne, bo nie moglbym zaladowac ich do localstorage, w kazdym razie i tak mija sie to|
+  // z celem, z racji, ze dane do logowania sa dostepne w pamieci przegladarki.
   constructor(login, email, password) {
     this.login = login;
     this.email = email;

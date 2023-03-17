@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+    crossorigin=""/>
+    <script defer src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin=""></script>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,6 +29,7 @@
       <div class="nav_right">
         <input type="button" class="btn login nav" value="Login" />
         <input type="button" class="btn registration nav" value="Rejestracja" />
+          <input type="button" class="btn logout nav" value="Logout" />
       </div>
     </nav>
     <div class="left_bar">
@@ -47,22 +54,14 @@
     <div class="main">
 <section class="logged">
   <h5>Witaj, użykowniku</h5>
+  <div class="logged_main">
   <div class="logged_div">
       <div class="weather_bar"><div class="single_weather_bar"><div class="single_weather_bar_city">Warszawa </div> 18℃</div> </div>
-      <div class="weather_bar"><div class="single_weather_bar"><div class="single_weather_bar_city">Warszawa </div> 18℃</div> </div>
-      <div class="weather_bar"><div class="single_weather_bar"><div class="single_weather_bar_city">Warszawa </div> 18℃</div> </div>
-      <div class="weather_bar"><div class="single_weather_bar"><div class="single_weather_bar_city">Warszawa </div> 18℃</div> </div>
-      <div class="weather_bar"><div class="single_weather_bar"><div class="single_weather_bar_city">Warszawa </div> 18℃</div> </div>
-      <div class="weather_bar"><div class="single_weather_bar"><div class="single_weather_bar_city">Warszawa </div> 18℃</div> </div>
-      <div class="weather_bar"><div class="single_weather_bar"><div class="single_weather_bar_city">Warszawa </div> 18℃</div> </div>
-      <div class="weather_bar"><div class="single_weather_bar"><div class="single_weather_bar_city">Warszawa </div> 18℃</div> </div>
-      <div class="weather_bar"><div class="single_weather_bar"><div class="single_weather_bar_city">Warszawa </div> 18℃</div> </div>
-      <div class="weather_bar"><div class="single_weather_bar"><div class="single_weather_bar_city">Warszawa </div> 18℃</div> </div>
-      <div class="weather_bar"><div class="single_weather_bar"><div class="single_weather_bar_city">Warszawa </div> 18℃</div> </div>
 
-      <div class="map_div"></div>
+
+    
   </div>
-
+  <div class="map_div" id="map"></div></div>
 </section>
 
 

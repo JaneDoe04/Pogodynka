@@ -86,30 +86,38 @@ h5 {
   color: white;
   height: 40rem;
   display: none;
+  flex-direction: column;
 }
+.logged_main {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+}
+
 .logged_div {
-  display: none;
-  justify-content: space-around;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
   padding: 2rem;
   background-color: rgb(71, 71, 71);
   display: flex;
   flex-direction: column;
-
-  height: 90%;
-  width: 90%;
+  height: 100%;
+  width: 30%;
 }
 .logged_div:hover {
   overflow-y: scroll;
 }
 .weather_bar {
-  width: 30%;
+  width: 90%;
   height: 100%;
   background-color: rgb(83, 83, 83);
 }
 .map_div {
-  width: 60%;
+  width: 100%;
   height: 100%;
-  background-color: rgb(83, 83, 83);
+  background-color: rgb(255, 255, 255);
 }
 .single_weather_bar {
   display: flex;
@@ -359,6 +367,20 @@ h5 {
   z-index: 200;
   /* height: 50%; */
   background-color: white;
+}
+.logout {
+  background: rgb(218, 15, 15);
+  background: linear-gradient(58deg, rgb(218, 15, 15) 0%, rgb(143, 1, 1) 100%);
+  display: none;
+}
+.logout:hover {
+  background: rgb(255, 0, 0);
+  background: linear-gradient(
+    58deg,
+    rgb(255, 173, 173) 0%,
+    rgb(255, 0, 0) 100%
+  );
+  color: white;
 }
 .submiter {
   width: 40%;
