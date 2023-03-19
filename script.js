@@ -21,6 +21,7 @@ class App {
   #map;
   #map_event;
   #map_zoom_level = 15;
+  #not_working_remove_event_listener = false;
   explanation = `<div class="explanation_box">Haslo musi zawierać conajmniej 8 znaków, jedną wielką literę, jedną małą literę oraz conajmniej 1 cyfrę.</div>`;
   registration = `<div class="login_row"> <div class="single_login_row"><h3>Login</h3> </div><input class="login_data login_input" type="text"></div>
   <div class="login_row"><div class="single_login_row"><h3>E-mail</h3></div> <input class="login_data email_input"  type="text"></div>
@@ -33,12 +34,13 @@ class App {
   <div class='error'></div>
   <div class="login_row"><div class="single_login_row"><h3>Hasło<sup class="explaination">*</sup></h3></div> <input class="login_data"  type="password"></div>
   <input type="submit" value="Zaloguj się!" class="submiter btn">`;
-
+  single_weather_bar = `<div class="single_weather_bar_city">Warszawa </div>`;
   constructor() {
+    window.addEventListener("keydown", this.login_by_enter.bind(this));
     sections.forEach((section) => this.section_observer.observe(section));
     images.forEach((img) => this.imgObserver.observe(img));
     unmaring.addEventListener("click", this.open_modal_window.bind(this));
-    blur.addEventListener("click", this.close_modal_window);
+    blur.addEventListener("click", this.close_modal_window.bind(this));
     btns.forEach((el) => {
       if (!el.classList.contains("logout"))
         el.addEventListener("click", this.open_modal_window.bind(this));
@@ -53,34 +55,32 @@ class App {
   //
   //
   //dodawanie mapy do diva dla zalogowanych
-  _get_Position() {
+  _get_Position(id) {
     if (navigator.geolocation)
       navigator.geolocation.getCurrentPosition(
-        this._loadMap.bind(this),
+        this._loadMap.bind(this, id),
         function () {
           alert("Could not get your position");
         }
       );
   }
-  _loadMap(position) {
+  _loadMap(id, position) {
     const { latitude } = position.coords;
     const { longitude } = position.coords;
 
     const coords = [latitude, longitude];
 
-    this.#map = L.map("map").setView(coords, this.#map_zoom_level);
+    if (!document.querySelector("#map").textContent) {
+      this.#map = L.map("map").setView(coords, this.#map_zoom_level);
+    }
 
     L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.#map);
-    this.#map.on("click", this._showForm.bind(this));
+    this.#map.on("click", this.add_popup.bind(this, id));
   }
-  _showForm(mapE) {
-    this.#map_event = mapE;
-    form.classList.remove("hidden");
-    inputDistance.focus();
-  }
+
   //
   //
   //CHMURKA Z WYMAGANIAMI DOT. HASLA
@@ -173,6 +173,7 @@ class App {
 
   open_modal_window(e) {
     if (!account_window.textContent) {
+      this.#not_working_remove_event_listener = true;
       this.filling_window(e.target);
       blur.style.display = "block";
       account_window.style.display = "flex";
@@ -182,12 +183,17 @@ class App {
           .addEventListener("click", this.login_validation.bind(this));
     }
   }
-
+  login_by_enter(e) {
+    if (e.key === "Enter" && this.#not_working_remove_event_listener) {
+      this._logining();
+    }
+  }
   close_modal_window() {
     blur.style.display = "none";
     account_window.style.display = "none";
     account_window.innerHTML = "";
     this.is_window_opened = true;
+    this.#not_working_remove_event_listener = false;
   }
   //
   //
@@ -310,7 +316,7 @@ class App {
     btns.forEach((el) => (el.style.display = "none"));
     logout_btn.style.display = "block";
     logout_btn.removeEventListener("click", this.open_modal_window.bind(this));
-    this._get_Position();
+    this._get_Position(user.id);
     this.name_filling(user);
   }
   name_filling(user) {
@@ -323,15 +329,27 @@ class App {
   }
   //
   //
+  add_popup(id, mapE) {
+    const popup_lat = mapE.latlng.lat;
+    const popup_lng = mapE.latlng.lng;
+
+    const pop = new Popup(popup_lat, popup_lng);
+
+    const marker = L.marker([popup_lat, popup_lng]).addTo(this.#map);
+    const find_user = this.#users.find((el) => el.id === id);
+    find_user.popups.push(pop);
+    console.log(find_user);
+    this.#map_event = mapE;
+  }
 }
 
-const app = new App();
 class User {
   id = Date.now();
   // #login;
   // #email;
   // #password; nie moge ustawic tych zmiennych na prywatne, bo nie moglbym zaladowac ich do localstorage, w kazdym razie i tak mija sie to|
   // z celem, z racji, ze dane do logowania sa dostepne w pamieci przegladarki.
+  popups = [];
   constructor(login, email, password) {
     this.login = login;
     this.email = email;
@@ -339,3 +357,10 @@ class User {
     console.log(this);
   }
 }
+class Popup {
+  constructor(lat, lng) {
+    this.lat = lat;
+    this.lng = lng;
+  }
+}
+const app = new App();
