@@ -73,6 +73,7 @@ class App {
     if (!document.querySelector("#map").textContent) {
       this.#map = L.map("map").setView(coords, this.#map_zoom_level);
     }
+    this.recreate_popups(id);
 
     L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
       attribution:
@@ -291,6 +292,9 @@ class App {
     localStorage.setItem("users", JSON.stringify(this.#users));
   }
   #getLocalStorage() {
+    console.log("1:");
+    console.dir(localStorage.getItem("users"));
+
     const data = JSON.parse(localStorage.getItem("users"));
 
     if (!data) return;
@@ -338,9 +342,22 @@ class App {
     const marker = L.marker([popup_lat, popup_lng]).addTo(this.#map);
     const find_user = this.#users.find((el) => el.id === id);
     find_user.popups.push(pop);
-    console.log(find_user);
+    this.#setLocalStorage();
     this.#map_event = mapE;
   }
+  recreate_popups(id){
+const current_user = this.#users.find(el=>el.id===id);
+console.log(current_user);
+current_user.popups.forEach(el=>{
+  // console.log(el.lat, el.lng);
+  const marker = L.marker([el.lat, el.lng]).addTo(this.#map);
+
+})
+}
+display_popups_bar(id){
+const current_user = this.#users.find(el=>el.id===id);
+const divs = `<div class="single_weather_bar"> 18℃</div> `;
+}
 }
 
 class User {
