@@ -13,11 +13,11 @@ const explaination_box = document.querySelector(".explanation_box");
 const sections = document.querySelectorAll("section");
 const logout_btn = document.querySelector(".logout");
 const user_name = document.querySelector("h5");
-<<<<<<< HEAD
+
 const left_bar = document.querySelector(".left_bar");
-=======
-const weather_bar = document.querySelector('.weather_bar');
->>>>>>> 9ebc54590d9afadf008945c0aa5ac97ecc514c21
+
+const weather_bar = document.querySelector(".weather_bar");
+
 window.addEventListener("load", () =>
   document.querySelector("#section1").classList.remove("first")
 );
@@ -432,7 +432,29 @@ class App {
     document.querySelector(".logged").style.display = "none";
   }
   //
-  //
+  recreate_popups(id) {
+    const current_user = this.#users.find((el) => el.id === id);
+    console.log(current_user);
+    current_user.popups.forEach((el) => {
+      const marker = L.marker([el.lat, el.lng]).addTo(this.#map);
+    });
+  }
+  display_popups_bar(id) {
+    weather_bar.innerHTML = "";
+    const current_user = this.#users.find((el) => el.id === id);
+    weather_bar.addEventListener(
+      "click",
+      this.switch_view.bind(this, current_user)
+    );
+
+    current_user.popups.forEach((el, i) => {
+      console.log(el.lat, el.lng);
+      const divs = `<div class="single_weather_bar" data-id='${i}'> kordy znacznika: ${Math.floor(
+        el.lat
+      )},  ${Math.floor(el.lng)}</div> `;
+      weather_bar.insertAdjacentHTML("beforeend", divs);
+    });
+  }
   add_popup(id, mapE) {
     const popup_lat = mapE.latlng.lat;
     const popup_lng = mapE.latlng.lng;
@@ -446,7 +468,16 @@ class App {
     this.#map_event = mapE;
     this.display_popups_bar(id);
   }
-<<<<<<< HEAD
+  switch_view(current_user, e) {
+    if (e.target.classList.contains("single_weather_bar")) {
+      const current_id = e.target.getAttribute("data-id");
+      console.log(current_id, current_user);
+      const current_cords = current_user.popups[current_id];
+      console.log(current_cords);
+      // L.map("map").setView(current_cords, this.#map_zoom_level);
+      console.log(L.map);
+    }
+  }
   #get_data(lat, lng) {
     return fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=temperature_2m,weathercode&forecast_days=1`
@@ -454,40 +485,6 @@ class App {
   }
   fullfill_left_bar() {
     const time = new Date();
-=======
-  recreate_popups(id){
-const current_user = this.#users.find(el=>el.id===id);
-console.log(current_user);
-current_user.popups.forEach(el=>{
-  const marker = L.marker([el.lat, el.lng]).addTo(this.#map);
-
-})
-}
-display_popups_bar(id){
-  weather_bar.innerHTML='';
-const current_user = this.#users.find(el=>el.id===id);
-weather_bar.addEventListener('click', this.switch_view.bind(this, current_user))
-
-current_user.popups.forEach((el, i)=>{
-  console.log(el.lat, el.lng);
-const divs = `<div class="single_weather_bar" data-id='${i}'> kordy znacznika: ${Math.floor(el.lat) },  ${Math.floor(el.lng)}</div> `;
-  weather_bar.insertAdjacentHTML('beforeend', divs);
-  
-})
-}
-switch_view(current_user, e){
-  if(e.target.classList.contains('single_weather_bar')){
-    const current_id = e.target.getAttribute('data-id');
-    console.log(current_id, current_user);
-    const current_cords = current_user.popups[current_id];
-    console.log(current_cords)
-    // L.map("map").setView(current_cords, this.#map_zoom_level);
-    console.log(L.map);
-    
-  }
-}
-}
->>>>>>> 9ebc54590d9afadf008945c0aa5ac97ecc514c21
 
     const dane = this.#big_cities_cords.forEach((el) => {
       const miasto = this.#get_data(el.lat, el.lng);
