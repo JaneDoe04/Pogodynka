@@ -13,11 +13,105 @@ const explaination_box = document.querySelector(".explanation_box");
 const sections = document.querySelectorAll("section");
 const logout_btn = document.querySelector(".logout");
 const user_name = document.querySelector("h5");
+const left_bar = document.querySelector(".left_bar");
 window.addEventListener("load", () =>
   document.querySelector("#section1").classList.remove("first")
 );
+const weather_code = [];
+weather_code[0] = "Czyste niebo";
+weather_code[1] = "Prawie czyste niebo";
+weather_code[2] = "Częściowe zachmurzone";
+weather_code[3] = "Pochmurnie";
+weather_code[45] = "Mgliście";
+weather_code[48] = "Mgła szronowa";
+weather_code[51] = "Lekka mżawka";
+weather_code[53] = "Umiarkowana mżawka";
+weather_code[55] = "Gęsta mżawka";
+weather_code[56] = "Mroźna mżawka o niskiej intensywności";
+weather_code[57] = "Mroźna mżawka o wysokiej intensywności";
+weather_code[61] = "Lekki deszcz";
+weather_code[63] = "Umiarkowany deszcz";
+weather_code[65] = "Intensywny deszcz";
+weather_code[66] = "Mroźny deszcz o niskiej intensywności";
+weather_code[67] = "Mroźny deszcz o wysokiej intensywności";
+weather_code[71] = "Opady śniegu o niskiej intensywności";
+weather_code[73] = "Opady śniegu o umiarkowanej intensywności";
+weather_code[75] = "Opady śniegu o wysokiej intensywności";
+weather_code[77] = "Gradobicie";
+weather_code[80] = "Przelotne opady deszczu";
+weather_code[81] = "Przelotne opady deszczu";
+weather_code[82] = "Przelotne opady deszczu ";
+weather_code[85] = "Lekkie opadu śniegu";
+weather_code[86] = "Mocne opady śniegu";
+weather_code[95] = "Burza";
+weather_code[96] = "Burza z gradem";
+weather_code[99] = "Burza z gradem";
+
 class App {
   #users = [];
+  #big_cities_cords = [
+    {
+      city: "Warszawa",
+      lat: 53.24,
+      lng: 19.81,
+    },
+    {
+      city: "Krakow",
+      lat: 50.06,
+      lng: 19.94,
+    },
+    {
+      city: "Gdańsk",
+      lat: 19.94,
+      lng: 18.65,
+    },
+    {
+      city: "Bydgoszcz",
+      lat: 53.12,
+      lng: 18.01,
+    },
+    {
+      city: "Szczecin",
+      lat: 53.43,
+      lng: 14.55,
+    },
+    {
+      city: "Poznań",
+      lat: 52.41,
+      lng: 16.93,
+    },
+    {
+      city: "Białystok",
+      lat: 53.13,
+      lng: 23.16,
+    },
+    {
+      city: "Łódź",
+      lat: 51.77,
+      lng: 19.47,
+    },
+    {
+      city: "Wroclaw",
+      lat: 51.1,
+      lng: 17.03,
+    },
+    {
+      city: "Częstochowa",
+      lat: 50.8,
+      lng: 19.12,
+    },
+    {
+      city: "Katowice",
+      lat: 50.26,
+      lng: 19.03,
+    },
+    {
+      city: "Lublin",
+      lat: 51.25,
+      lng: 22.57,
+    },
+  ];
+
   #map;
   #map_event;
   #map_zoom_level = 15;
@@ -36,6 +130,7 @@ class App {
   <input type="submit" value="Zaloguj się!" class="submiter btn">`;
   single_weather_bar = `<div class="single_weather_bar_city">Warszawa </div>`;
   constructor() {
+    this.fullfill_left_bar();
     window.addEventListener("keydown", this.login_by_enter.bind(this));
     sections.forEach((section) => this.section_observer.observe(section));
     images.forEach((img) => this.imgObserver.observe(img));
@@ -67,7 +162,7 @@ class App {
   _loadMap(id, position) {
     const { latitude } = position.coords;
     const { longitude } = position.coords;
-
+    console.log(position);
     const coords = [latitude, longitude];
 
     if (!document.querySelector("#map").textContent) {
@@ -341,8 +436,51 @@ class App {
     console.log(find_user);
     this.#map_event = mapE;
   }
-}
+  #get_data(lat, lng) {
+    return fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=temperature_2m,weathercode&forecast_days=1`
+    );
+  }
+  fullfill_left_bar() {
+    const time = new Date();
 
+    const dane = this.#big_cities_cords.forEach((el) => {
+      const miasto = this.#get_data(el.lat, el.lng);
+      miasto
+        .then((res) => res.json())
+        .then((res) => {
+          console.log(res);
+          const current_weather_code = res.hourly.weathercode[time.getHours()];
+          const left_bar_div = `<div class="city"><h4>${el.city}<br> </h4> ${
+            res.hourly.temperature_2m[time.getHours()]
+          }℃<br>${weather_code[current_weather_code]} <div class="emotka">${
+            current_weather_code == 0
+              ? "🌞"
+              : current_weather_code >= 1 && current_weather_code <= 3
+              ? "☁"
+              : current_weather_code >= 45 && current_weather_code <= 48
+              ? "🌫"
+              : current_weather_code >= 51 && current_weather_code <= 67
+              ? "🌧"
+              : current_weather_code >= 71 && current_weather_code <= 75
+              ? "❄"
+              : current_weather_code == 77
+              ? "🌨"
+              : current_weather_code >= 80 && current_weather_code <= 82
+              ? "🌧"
+              : current_weather_code >= 85 && current_weather_code <= 86
+              ? "❄"
+              : current_weather_code == 95
+              ? "🌩"
+              : "⛈s"
+          }</div></div>`;
+
+          left_bar.insertAdjacentHTML("beforeend", left_bar_div);
+        });
+    });
+    // console.log(dane);
+  }
+}
 class User {
   id = Date.now();
   // #login;

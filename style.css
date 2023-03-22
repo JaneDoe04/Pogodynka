@@ -166,7 +166,7 @@ h5 {
 }
 .city {
   border-bottom: solid white 2px;
-  height: 8rem;
+  /* height: 8rem; */
   padding: 3rem;
   width: 100%;
   justify-content: center;
