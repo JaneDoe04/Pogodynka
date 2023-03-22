@@ -13,7 +13,11 @@ const explaination_box = document.querySelector(".explanation_box");
 const sections = document.querySelectorAll("section");
 const logout_btn = document.querySelector(".logout");
 const user_name = document.querySelector("h5");
+<<<<<<< HEAD
 const left_bar = document.querySelector(".left_bar");
+=======
+const weather_bar = document.querySelector('.weather_bar');
+>>>>>>> 9ebc54590d9afadf008945c0aa5ac97ecc514c21
 window.addEventListener("load", () =>
   document.querySelector("#section1").classList.remove("first")
 );
@@ -168,6 +172,8 @@ class App {
     if (!document.querySelector("#map").textContent) {
       this.#map = L.map("map").setView(coords, this.#map_zoom_level);
     }
+    this.recreate_popups(id);
+    this.display_popups_bar(id);
 
     L.tileLayer("https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png", {
       attribution:
@@ -386,6 +392,9 @@ class App {
     localStorage.setItem("users", JSON.stringify(this.#users));
   }
   #getLocalStorage() {
+    console.log("1:");
+    console.dir(localStorage.getItem("users"));
+
     const data = JSON.parse(localStorage.getItem("users"));
 
     if (!data) return;
@@ -433,9 +442,11 @@ class App {
     const marker = L.marker([popup_lat, popup_lng]).addTo(this.#map);
     const find_user = this.#users.find((el) => el.id === id);
     find_user.popups.push(pop);
-    console.log(find_user);
+    this.#setLocalStorage();
     this.#map_event = mapE;
+    this.display_popups_bar(id);
   }
+<<<<<<< HEAD
   #get_data(lat, lng) {
     return fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&hourly=temperature_2m,weathercode&forecast_days=1`
@@ -443,6 +454,40 @@ class App {
   }
   fullfill_left_bar() {
     const time = new Date();
+=======
+  recreate_popups(id){
+const current_user = this.#users.find(el=>el.id===id);
+console.log(current_user);
+current_user.popups.forEach(el=>{
+  const marker = L.marker([el.lat, el.lng]).addTo(this.#map);
+
+})
+}
+display_popups_bar(id){
+  weather_bar.innerHTML='';
+const current_user = this.#users.find(el=>el.id===id);
+weather_bar.addEventListener('click', this.switch_view.bind(this, current_user))
+
+current_user.popups.forEach((el, i)=>{
+  console.log(el.lat, el.lng);
+const divs = `<div class="single_weather_bar" data-id='${i}'> kordy znacznika: ${Math.floor(el.lat) },  ${Math.floor(el.lng)}</div> `;
+  weather_bar.insertAdjacentHTML('beforeend', divs);
+  
+})
+}
+switch_view(current_user, e){
+  if(e.target.classList.contains('single_weather_bar')){
+    const current_id = e.target.getAttribute('data-id');
+    console.log(current_id, current_user);
+    const current_cords = current_user.popups[current_id];
+    console.log(current_cords)
+    // L.map("map").setView(current_cords, this.#map_zoom_level);
+    console.log(L.map);
+    
+  }
+}
+}
+>>>>>>> 9ebc54590d9afadf008945c0aa5ac97ecc514c21
 
     const dane = this.#big_cities_cords.forEach((el) => {
       const miasto = this.#get_data(el.lat, el.lng);
