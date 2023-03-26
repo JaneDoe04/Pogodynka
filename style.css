@@ -79,7 +79,12 @@ section {
 h5 {
   font-size: 25px;
 }
-
+.remove_popup_bar {
+  position: relative;
+  cursor: pointer;
+  right: 0.3rem;
+  top: 0.3rem;
+}
 .logged {
   margin-top: 5rem;
   background-color: rgb(71, 71, 71);
@@ -167,7 +172,7 @@ h5 {
 .city {
   border-bottom: solid white 2px;
   /* height: 8rem; */
-  padding: 3rem;
+  padding: 1rem;
   width: 100%;
   justify-content: center;
   flex-direction: column;

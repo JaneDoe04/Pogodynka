@@ -170,7 +170,9 @@ class App {
     const coords = [latitude, longitude];
 
     if (!document.querySelector("#map").textContent) {
-      this.#map = L.map("map").setView(coords, this.#map_zoom_level);
+      this.#map = L.map("map", {
+        doubleClickZoom: false,
+      }).setView(coords, this.#map_zoom_level);
     }
     this.recreate_popups(id);
     this.display_popups_bar(id);
@@ -436,7 +438,10 @@ class App {
     const current_user = this.#users.find((el) => el.id === id);
     console.log(current_user);
     current_user.popups.forEach((el) => {
-      const marker = L.marker([el.lat, el.lng]).addTo(this.#map);
+      const marker = L.marker([el.lat, el.lng], {
+        closeOnClick: true,
+      }).addTo(this.#map);
+      marker.on("click", this.close_popup.bind(this, marker));
     });
   }
   display_popups_bar(id) {
@@ -448,8 +453,7 @@ class App {
     );
 
     current_user.popups.forEach((el, i) => {
-      console.log(el.lat, el.lng);
-      const divs = `<div class="single_weather_bar" data-id='${i}'> kordy znacznika: ${Math.floor(
+      const divs = `<div class="single_weather_bar" data-id='${i}'><div class='remove_popup_bar${i}'>❌</div> kordy znacznika: ${Math.floor(
         el.lat
       )},  ${Math.floor(el.lng)}</div> `;
       weather_bar.insertAdjacentHTML("beforeend", divs);
@@ -462,11 +466,16 @@ class App {
     const pop = new Popup(popup_lat, popup_lng);
 
     const marker = L.marker([popup_lat, popup_lng]).addTo(this.#map);
+    marker.on("click", this.close_popup.bind(this, marker));
+
     const find_user = this.#users.find((el) => el.id === id);
     find_user.popups.push(pop);
     this.#setLocalStorage();
     this.#map_event = mapE;
     this.display_popups_bar(id);
+  }
+  close_popup(marker) {
+    marker.remove();
   }
   switch_view(current_user, e) {
     if (e.target.classList.contains("single_weather_bar")) {
@@ -474,8 +483,12 @@ class App {
       console.log(current_id, current_user);
       const current_cords = current_user.popups[current_id];
       console.log(current_cords);
-      // L.map("map").setView(current_cords, this.#map_zoom_level);
-      console.log(L.map);
+      this.#map.setView(current_cords, this.#map_zoom_level, {
+        animate: true,
+        pan: {
+          duration: 1,
+        },
+      });
     }
   }
   #get_data(lat, lng) {
@@ -485,7 +498,6 @@ class App {
   }
   fullfill_left_bar() {
     const time = new Date();
-
     const dane = this.#big_cities_cords.forEach((el) => {
       const miasto = this.#get_data(el.lat, el.lng);
       miasto
