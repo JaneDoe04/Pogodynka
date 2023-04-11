@@ -394,9 +394,6 @@ class App {
     localStorage.setItem("users", JSON.stringify(this.#users));
   }
   #getLocalStorage() {
-    console.log("1:");
-    console.dir(localStorage.getItem("users"));
-
     const data = JSON.parse(localStorage.getItem("users"));
 
     if (!data) return;
@@ -435,16 +432,17 @@ class App {
   }
   //
   recreate_popups(id) {
+    console.log(this);
     const current_user = this.#users.find((el) => el.id === id);
     console.log(current_user);
     current_user.popups.forEach((el) => {
-      const marker = L.marker([el.lat, el.lng], {
-        closeOnClick: true,
-      }).addTo(this.#map);
-      marker.on("click", this.close_popup.bind(this, marker));
+      const marker = L.marker([el.lat, el.lng]).addTo(this.#map);
+      marker.on("click", this.close_popup.bind(this, marker, current_user));
     });
   }
   display_popups_bar(id) {
+    const time = new Date();
+
     weather_bar.innerHTML = "";
     const current_user = this.#users.find((el) => el.id === id);
     weather_bar.addEventListener(
@@ -453,29 +451,87 @@ class App {
     );
 
     current_user.popups.forEach((el, i) => {
-      const divs = `<div class="single_weather_bar" data-id='${i}'><div class='remove_popup_bar${i}'>❌</div> kordy znacznika: ${Math.floor(
-        el.lat
-      )},  ${Math.floor(el.lng)}</div> `;
-      weather_bar.insertAdjacentHTML("beforeend", divs);
+      this.#get_data(el.lat, el.lng)
+        .then((res) => res.json())
+        .then((res) => {
+          const current_weather_code = res.hourly.weathercode[time.getHours()];
+
+          console.log(res.hourly.temperature_2m[time.getHours()]);
+          const divs = `<div class="single_weather_bar" data-id='${i}'>${
+            el.village
+          }<br>${el.country}<br>${res.hourly.temperature_2m[time.getHours()]}℃${
+            current_weather_code == 0
+              ? "🌞"
+              : current_weather_code >= 1 && current_weather_code <= 3
+              ? "☁"
+              : current_weather_code >= 45 && current_weather_code <= 48
+              ? "🌫"
+              : current_weather_code >= 51 && current_weather_code <= 67
+              ? "🌧"
+              : current_weather_code >= 71 && current_weather_code <= 75
+              ? "❄"
+              : current_weather_code == 77
+              ? "🌨"
+              : current_weather_code >= 80 && current_weather_code <= 82
+              ? "🌧"
+              : current_weather_code >= 85 && current_weather_code <= 86
+              ? "❄"
+              : current_weather_code == 95
+              ? "🌩"
+              : "⛈s"
+          }</div> `;
+          weather_bar.insertAdjacentHTML("beforeend", divs);
+        });
     });
   }
   add_popup(id, mapE) {
     const popup_lat = mapE.latlng.lat;
     const popup_lng = mapE.latlng.lng;
+    fetch(
+      `https://api.opencagedata.com/geocode/v1/json?q=${popup_lat}+${popup_lng}&key=f1928afdcd2b43eeafa175abc10e4db6`
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(
+          res.results[0].components.village,
+          res.results[0].components.country,
+          res
+        );
+        const pop = new Popup(
+          popup_lat,
+          popup_lng,
+          res.results[0].components.village
+            ? res.results[0].components.village
+            : res.results[0].components.city
+            ? res.results[0].components.city
+            : res.results[0].components.county,
+          res.results[0].components.country
+        );
 
-    const pop = new Popup(popup_lat, popup_lng);
-
-    const marker = L.marker([popup_lat, popup_lng]).addTo(this.#map);
-    marker.on("click", this.close_popup.bind(this, marker));
-
-    const find_user = this.#users.find((el) => el.id === id);
-    find_user.popups.push(pop);
-    this.#setLocalStorage();
-    this.#map_event = mapE;
-    this.display_popups_bar(id);
+        const marker = L.marker([popup_lat, popup_lng]).addTo(this.#map);
+        const find_user = this.#users.find((el) => el.id === id);
+        marker.on("click", this.close_popup.bind(this, marker, find_user));
+        console.log(find_user);
+        find_user.popups.push(pop);
+        this.#setLocalStorage();
+        this.#map_event = mapE;
+        this.display_popups_bar(id);
+      });
   }
-  close_popup(marker) {
-    marker.remove();
+  close_popup(marker, find_user) {
+    console.log(marker._latlng, find_user.popups);
+    find_user.popups.forEach((el, i) => {
+      if (marker._latlng.lng == el.lng && marker._latlng.lat == el.lat) {
+        find_user.popups.splice(i, 1);
+        marker.remove();
+        console.log(find_user.popups);
+      }
+    });
+    this.display_popups_bar(find_user.id);
+
+    this.#setLocalStorage();
+
+    // marker.remove();
   }
   switch_view(current_user, e) {
     if (e.target.classList.contains("single_weather_bar")) {
@@ -503,7 +559,6 @@ class App {
       miasto
         .then((res) => res.json())
         .then((res) => {
-          console.log(res);
           const current_weather_code = res.hourly.weathercode[time.getHours()];
           const left_bar_div = `<div class="city"><h4>${el.city}<br> </h4> ${
             res.hourly.temperature_2m[time.getHours()]
@@ -550,9 +605,11 @@ class User {
   }
 }
 class Popup {
-  constructor(lat, lng) {
+  constructor(lat, lng, village, country) {
     this.lat = lat;
     this.lng = lng;
+    this.village = village;
+    this.country = country;
   }
 }
 const app = new App();
