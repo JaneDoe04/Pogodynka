@@ -1,9 +1,9 @@
 * {
   font-family: "Poppins", sans-serif;
-
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  user-select: none;
 }
 sup {
   cursor: pointer;
@@ -12,7 +12,7 @@ h3 {
   margin-left: 2rem;
 }
 a {
-  color: green;
+  color: rgb(97, 148, 224);
   margin-left: 7rem;
   font-size: 1rem;
   font-weight: 700;
@@ -26,14 +26,14 @@ img {
   margin-top: 0;
 }
 h1 {
-  color: rgb(71, 71, 71);
+  color: rgb(255, 255, 255);
   font-size: 3rem;
   margin-bottom: 1rem;
 }
 h2 {
   display: flex;
 
-  color: rgb(94, 94, 94);
+  color: rgb(255, 255, 255);
   margin-bottom: 1rem;
   margin-left: 5rem;
   margin-top: 0.3rem;
@@ -49,26 +49,30 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: rgb(241, 241, 241);
+  background-color: rgb(54, 57, 58);
+}
+body::-webkit-scrollbar {
+  display: none;
 }
 footer {
   text-align: center;
   padding: 2rem;
   height: 5rem;
   box-shadow: 0px 0px 5px 1px grey;
-  color: rgb(70, 70, 70);
+  color: rgb(255, 255, 255);
   font-weight: 600;
   width: 100%;
   background-color: rgb(255, 255, 255);
 }
 section {
+  background-color: transparent;
   transition: all 1s;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin-bottom: 10rem;
-  background-color: whitesmoke;
+  /* background-color: whitesmoke; */
   padding-top: 1rem;
   padding-bottom: 1rem;
   width: 80%;
@@ -78,6 +82,11 @@ section {
 }
 h5 {
   font-size: 25px;
+  background-color: rgb(54, 57, 58);
+
+  width: 75%;
+  text-align: center;
+  padding: 0.7rem;
 }
 .remove_popup_bar {
   position: relative;
@@ -86,18 +95,24 @@ h5 {
   top: 0.3rem;
 }
 .logged {
+  display: flex;
+
+  background-image: url("pobrane.jpg");
   margin-top: 5rem;
-  background-color: rgb(71, 71, 71);
+  background-color: rgb(54, 57, 58);
+
+  background-size: 100vw;
+  width: 100vw;
   color: white;
   height: 40rem;
-  display: none;
+  justify-content: center;
   flex-direction: column;
 }
 .logged_main {
   display: flex;
   flex-direction: row;
   height: 100%;
-  width: 100%;
+  width: 75%;
 }
 
 .logged_div {
@@ -105,7 +120,8 @@ h5 {
   justify-content: center;
   align-items: center;
   padding: 2rem;
-  background-color: rgb(71, 71, 71);
+  background-color: rgb(54, 57, 58);
+
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -116,8 +132,10 @@ h5 {
 }
 .weather_bar {
   width: 90%;
-  height: 100%;
-  background-color: rgb(83, 83, 83);
+  height: 103%;
+}
+.logged_div::-webkit-scrollbar {
+  display: none;
 }
 .map_div {
   width: 100%;
@@ -125,6 +143,8 @@ h5 {
   background-color: rgb(255, 255, 255);
 }
 .single_weather_bar {
+  background-color: rgb(71, 71, 71);
+
   display: flex;
   width: 100%;
   border: solid white 1px;
@@ -148,22 +168,24 @@ h5 {
   position: absolute;
 }
 .left_bar {
-  background: rgb(67, 218, 15);
+  background: rgb(87, 106, 158);
   background: linear-gradient(
     58deg,
-    rgba(67, 218, 15, 1) 0%,
-    rgba(1, 143, 24, 1) 100%
+    rgba(87, 106, 158) 0%,
+    rgb(204, 204, 204) 100%
   );
   position: fixed;
-  left: -18vw;
+  left: -14vw;
   color: white;
   overflow: hidden;
   flex-direction: column;
   z-index: 150;
   height: 100vh;
-  width: 20vw;
   transition: 0.3s;
   background-color: rgb(56, 56, 56);
+}
+.left_bar::-webkit-scrollbar {
+  display: none;
 }
 .left_bar:hover {
   left: 0;
@@ -172,7 +194,7 @@ h5 {
 .city {
   border-bottom: solid white 2px;
   /* height: 8rem; */
-  padding: 1rem;
+  padding: 2rem;
   width: 100%;
   justify-content: center;
   flex-direction: column;
@@ -192,6 +214,8 @@ h5 {
   width: 60%;
 }
 .navigation_bar {
+  background-color: rgb(139, 145, 178);
+
   margin-bottom: 5rem;
   display: flex;
   transition: 0.3s;
@@ -204,7 +228,6 @@ h5 {
   position: fixed;
   z-index: 2000;
 
-  background-color: rgb(255, 255, 255);
   box-shadow: 0px 0px 5px 1px grey;
 }
 .main {
@@ -217,31 +240,29 @@ h5 {
 }
 .btn {
   transition: 0.3s;
-  background: rgb(67, 218, 15);
-  background: linear-gradient(
-    58deg,
-    rgba(67, 218, 15, 1) 0%,
-    rgba(1, 143, 24, 1) 100%
-  );
+  background: #ccd1d8;
+  /* background: linear-gradient(58deg, #ccd1d8 0%, #8b91b2 100%); */
   border: none;
   font-size: 1rem;
   font-weight: 700;
+
   border-radius: 3rem;
   color: white;
+  text-shadow: 0px 0px 2px black;
   height: 3rem;
   width: 8rem;
 }
-.btn:hover {
-  background: rgb(255, 255, 255);
+/* .btn:hover {
+  background: rgb(87, 106, 158);
   background: linear-gradient(
-    58deg,
-    rgb(243, 243, 243) 0%,
-    rgb(170, 231, 180) 100%
-  );
-  color: green;
-  box-shadow: 0px 0px 8px 2px grey;
-  transform: translateY(-5%);
-}
+    -58deg,
+    rgba(87, 106, 158) 0%,
+    rgb(209, 209, 209) 100%
+  ); */
+/* color: green; */
+/* box-shadow: 0px 0px 8px 2px grey;
+  transform: translateY(-5%); */
+/* } */
 .btn:active {
   transform: translateY(-1rem);
 }
@@ -264,7 +285,7 @@ h5 {
   font-size: 1.2rem;
   font-family: "Poppins", sans-serif;
   transition: 0.3s;
-  color: rgba(0, 0, 0, 0.74);
+  color: rgb(255, 255, 255);
   padding: 0.3rem;
 }
 .jump_to:hover {
@@ -289,7 +310,7 @@ h5 {
   margin-left: 3rem;
   font-weight: 500;
   font-size: 1.3rem;
-  color: rgb(109, 109, 109);
+  color: rgb(255, 255, 255);
 }
 .text_upgrade {
   display: inline;
@@ -298,11 +319,11 @@ h5 {
   border-radius: 5%;
   margin-left: 1rem;
   transform: skewY(-2deg);
-  background: rgb(67, 218, 15);
+  background: rgb(87, 106, 158);
   background: linear-gradient(
     58deg,
-    rgba(67, 218, 15, 1) 0%,
-    rgba(1, 143, 24, 1) 100%
+    rgba(87, 106, 158) 0%,
+    rgb(209, 209, 209) 100%
   );
 }
 .lazy-img {
@@ -339,6 +360,7 @@ h5 {
   width: 100%;
   align-items: center;
   display: flex;
+
   flex-direction: row;
 }
 .single_login_row {
@@ -346,10 +368,22 @@ h5 {
   padding-left: 3rem;
 }
 .login_data {
+  background-color: rgb(122, 122, 122);
+  outline: none;
+  border: none;
+  text-align: center;
+
+  color: white;
+
+  border-bottom: solid white 2px;
+
   margin-left: 5rem;
   width: 60%;
   padding: 0.5rem;
   height: 100%;
+}
+.login_data::placeholder {
+  color: rgba(255, 255, 255, 0.658);
 }
 .login_data_check {
   margin-left: 1rem;
@@ -360,6 +394,9 @@ h5 {
   filter: blur(20px);
 }
 .account {
+  background-color: rgb(122, 122, 122);
+
+  color: white;
   display: none;
   flex-direction: column;
   gap: 1rem;
@@ -372,28 +409,21 @@ h5 {
   top: 20%;
   z-index: 200;
   /* height: 50%; */
-  background-color: white;
 }
 .logout {
-  background: rgb(218, 15, 15);
-  background: linear-gradient(58deg, rgb(218, 15, 15) 0%, rgb(143, 1, 1) 100%);
+  background: rgb(185, 10, 10);
+  background: linear-gradient(58deg, rgb(185, 10, 10) 0%, rgb(117, 0, 0) 100%);
   display: none;
 }
 .logout:hover {
-  background: rgb(255, 0, 0);
-  background: linear-gradient(
-    58deg,
-    rgb(255, 173, 173) 0%,
-    rgb(255, 0, 0) 100%
-  );
-  color: white;
+  cursor: pointer;
 }
 .submiter {
   width: 40%;
   height: 3rem;
 }
 .accepter {
-  color: rgba(0, 0, 0, 0.507);
+  color: rgb(255, 255, 255);
   font-size: 0.8rem;
 }
 .animated {

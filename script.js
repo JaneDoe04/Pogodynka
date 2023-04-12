@@ -121,16 +121,16 @@ class App {
   #map_zoom_level = 15;
   #not_working_remove_event_listener = false;
   explanation = `<div class="explanation_box">Haslo musi zawierać conajmniej 8 znaków, jedną wielką literę, jedną małą literę oraz conajmniej 1 cyfrę.</div>`;
-  registration = `<div class="login_row"> <div class="single_login_row"><h3>Login</h3> </div><input class="login_data login_input" type="text"></div>
-  <div class="login_row"><div class="single_login_row"><h3>E-mail</h3></div> <input class="login_data email_input"  type="text"></div>
-  <div class="login_row"><div class="single_login_row"><h3>Hasło<sup class="explaination">*</sup></h3></div> <input class="login_data password_input"  type="password"></div>
-  <div class="login_row"><div class="single_login_row"><h3>Potwierdź hasło</h3> </div><input class="login_data password_input_repeat"  type="password"></div>
+  registration = `<div class="login_row"> <div class="single_login_row"><h3>Login</h3> </div><input placeholder='login' class="login_data login_input" type="text"></div>
+  <div class="login_row"><div class="single_login_row"><h3>E-mail</h3></div> <input class="login_data  email_input" placeholder='e-mail'  type="text"></div>
+  <div class="login_row"><div class="single_login_row"><h3>Hasło<sup class="explaination">*</sup></h3></div> <input class="login_data password_input"  placeholder='password' type="password"></div>
+  <div class="login_row"><div class="single_login_row"><h3>Potwierdź hasło</h3> </div><input class="login_data password_input_repeat" placeholder='repeat password' type="password"></div>
   <div class='error'></div>
   <div class="login_row"><div class="single_login_row"><h3 class="accepter">Zapoznałem się z warunkami nieistniejacej umowy i zobowiązuję się ich przestrzegać</h3></div><input class="login_data_check"  type="checkbox"></div>
   <input type="submit" value="Załóż konto!" class="submiter btn">`;
-  login = `<div class="login_row"> <div class="single_login_row"><h3>Login</h3> </div><input class="login_data login_input" type="text"></div>
+  login = `<div class="login_row"> <div class="single_login_row"><h3>Login</h3> </div><input class="login_data  login_input" placeholder='login' type="text"></div>
   <div class='error'></div>
-  <div class="login_row"><div class="single_login_row"><h3>Hasło<sup class="explaination">*</sup></h3></div> <input class="login_data"  type="password"></div>
+  <div class="login_row"><div class="single_login_row"><h3>Hasło<sup class="explaination">*</sup></h3></div> <input class="login_data" placeholder='password'  type="password"></div>
   <input type="submit" value="Zaloguj się!" class="submiter btn">`;
   single_weather_bar = `<div class="single_weather_bar_city">Warszawa </div>`;
   constructor() {
