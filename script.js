@@ -13,6 +13,9 @@ const explaination_box = document.querySelector(".explanation_box");
 const sections = document.querySelectorAll("section");
 const logout_btn = document.querySelector(".logout");
 const user_name = document.querySelector("h5");
+const the_greatest_weather_div = document.querySelector(
+  ".the_greatest_weather_div"
+);
 
 const left_bar = document.querySelector(".left_bar");
 
@@ -66,7 +69,7 @@ class App {
     },
     {
       city: "Gdańsk",
-      lat: 19.94,
+      lat: 54.35,
       lng: 18.65,
     },
     {
@@ -120,6 +123,7 @@ class App {
   #map_event;
   #map_zoom_level = 15;
   #not_working_remove_event_listener = false;
+  the_hottest_cities = [];
   explanation = `<div class="explanation_box">Haslo musi zawierać conajmniej 8 znaków, jedną wielką literę, jedną małą literę oraz conajmniej 1 cyfrę.</div>`;
   registration = `<div class="login_row"> <div class="single_login_row"><h3>Login</h3> </div><input placeholder='login' class="login_data login_input" type="text"></div>
   <div class="login_row"><div class="single_login_row"><h3>E-mail</h3></div> <input class="login_data  email_input" placeholder='e-mail'  type="text"></div>
@@ -217,8 +221,12 @@ class App {
   // PRZYKLEJANIE PASKA NAWIGACYJNEGO NA STALE
   animated_section_observer(entries) {
     const [entry] = entries;
-    if (entry.isIntersecting && entry.target.classList.contains("animated"))
+    if (entry.isIntersecting && entry.target.classList.contains("animated")) {
+      if (entry.target.classList.contains("last_one"))
+        app.best_weather_fullfill();
       entry.target.classList.remove("animated");
+      console.log(this);
+    }
   }
 
   section_observer = new IntersectionObserver(this.animated_section_observer, {
@@ -275,6 +283,7 @@ class App {
   }
 
   open_modal_window(e) {
+    this.best_weather_fullfill();
     if (!account_window.textContent) {
       this.#not_working_remove_event_listener = true;
       this.filling_window(e.target);
@@ -560,6 +569,7 @@ class App {
         .then((res) => res.json())
         .then((res) => {
           const current_weather_code = res.hourly.weathercode[time.getHours()];
+          el.weather = res.hourly.temperature_2m[time.getHours()];
           const left_bar_div = `<div class="city"><h4>${el.city}<br> </h4> ${
             res.hourly.temperature_2m[time.getHours()]
           }℃<br>${weather_code[current_weather_code]} <div class="emotka">${
@@ -588,6 +598,13 @@ class App {
         });
     });
     // console.log(dane);
+  }
+  best_weather_fullfill() {
+    this.#big_cities_cords.sort((a, b) => b.weather - a.weather);
+    console.log(this.#big_cities_cords);
+    for (let i = 0; i < 5; i++) {
+      console.log(this.#big_cities_cords[i]);
+    }
   }
 }
 class User {
