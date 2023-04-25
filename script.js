@@ -13,9 +13,12 @@ const explaination_box = document.querySelector(".explanation_box");
 const sections = document.querySelectorAll("section");
 const logout_btn = document.querySelector(".logout");
 const user_name = document.querySelector("h5");
+<<<<<<< Updated upstream
 const left_scroll = document.querySelector('.scroll_to_left');
 const right_scroll = document.querySelector('.scroll_to_right');
 
+=======
+>>>>>>> Stashed changes
 const the_greatest_weather_div = document.querySelector(
   ".the_greatest_weather_div"
 );
@@ -607,6 +610,7 @@ class App {
   best_weather_fullfill() {
     this.#big_cities_cords.sort((a, b) => b.weather - a.weather);
     console.log(this.#big_cities_cords);
+<<<<<<< Updated upstream
 
     for (let i = 0; i < 3; i++) {
       const html = `<div class="the_greatest_weather_single_div">
@@ -632,6 +636,12 @@ class App {
    })
     
   }
+=======
+    for (let i = 0; i < 5; i++) {
+      console.log(this.#big_cities_cords[i]);
+    }
+  }
+>>>>>>> Stashed changes
 }
 class User {
   id = Date.now();
