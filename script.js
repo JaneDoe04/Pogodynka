@@ -1,4 +1,5 @@
 "use strict";
+
 const navigation_bar = document.querySelector(".navigation_bar");
 const scroll_down = document.querySelector(".scroll_down");
 const section_scroll = document.querySelectorAll(".jump_to");
@@ -13,12 +14,9 @@ const explaination_box = document.querySelector(".explanation_box");
 const sections = document.querySelectorAll("section");
 const logout_btn = document.querySelector(".logout");
 const user_name = document.querySelector("h5");
-<<<<<<< Updated upstream
-const left_scroll = document.querySelector('.scroll_to_left');
-const right_scroll = document.querySelector('.scroll_to_right');
+const left_scroll = document.querySelector(".scroll_to_left");
+const right_scroll = document.querySelector(".scroll_to_right");
 
-=======
->>>>>>> Stashed changes
 const the_greatest_weather_div = document.querySelector(
   ".the_greatest_weather_div"
 );
@@ -31,6 +29,7 @@ window.addEventListener("load", () =>
   document.querySelector("#section1").classList.remove("first")
 );
 const weather_code = [];
+window.scrollTo(navigation_bar);
 weather_code[0] = "Czyste niebo";
 weather_code[1] = "Prawie czyste niebo";
 weather_code[2] = "Częściowe zachmurzone";
@@ -130,6 +129,7 @@ class App {
   #map_zoom_level = 15;
   #not_working_remove_event_listener = false;
   the_hottest_cities = [];
+  scrolling_level = 1;
   explanation = `<div class="explanation_box">Haslo musi zawierać conajmniej 8 znaków, jedną wielką literę, jedną małą literę oraz conajmniej 1 cyfrę.</div>`;
   registration = `<div class="login_row"> <div class="single_login_row"><h3>Login</h3> </div><input placeholder='login' class="login_data login_input" type="text"></div>
   <div class="login_row"><div class="single_login_row"><h3>E-mail</h3></div> <input class="login_data  email_input" placeholder='e-mail'  type="text"></div>
@@ -145,8 +145,8 @@ class App {
   single_weather_bar = `<div class="single_weather_bar_city">Warszawa </div>`;
   constructor() {
     this.fullfill_left_bar();
-    left_scroll.addEventListener('click', this.scroll_to_left.bind(this));
-    right_scroll.addEventListener('click', this.scroll_to_right.bind(this));
+    left_scroll.addEventListener("click", this.scroll_to_left.bind(this));
+    right_scroll.addEventListener("click", this.scroll_to_right.bind(this));
     window.addEventListener("keydown", this.login_by_enter.bind(this));
     sections.forEach((section) => this.section_observer.observe(section));
     images.forEach((img) => this.imgObserver.observe(img));
@@ -178,7 +178,6 @@ class App {
   _loadMap(id, position) {
     const { latitude } = position.coords;
     const { longitude } = position.coords;
-    console.log(position);
     const coords = [latitude, longitude];
 
     if (!document.querySelector("#map").textContent) {
@@ -233,7 +232,6 @@ class App {
       if (entry.target.classList.contains("last_one"))
         app.best_weather_fullfill();
       entry.target.classList.remove("animated");
-      console.log(this);
     }
   }
 
@@ -319,7 +317,6 @@ class App {
   //
   // PROCES TWORZENIA KONTA
   check_login() {
-    console.log(document.querySelector(".login_input"));
     const login = document.querySelector(".login_input").value;
     if (login.length < 8) return "Podany login ma mniej niż 8 znaków";
     if (this.#users.find((user) => user.login === login))
@@ -399,7 +396,6 @@ class App {
       document.querySelector(".email_input").value,
       document.querySelector(".password_input").value
     );
-    console.log(this.#users);
 
     this.#users.push(user);
     this.#setLocalStorage();
@@ -449,9 +445,8 @@ class App {
   }
   //
   recreate_popups(id) {
-    console.log(this);
     const current_user = this.#users.find((el) => el.id === id);
-    console.log(current_user);
+
     current_user.popups.forEach((el) => {
       const marker = L.marker([el.lat, el.lng]).addTo(this.#map);
       marker.on("click", this.close_popup.bind(this, marker, current_user));
@@ -473,7 +468,6 @@ class App {
         .then((res) => {
           const current_weather_code = res.hourly.weathercode[time.getHours()];
 
-          console.log(res.hourly.temperature_2m[time.getHours()]);
           const divs = `<div class="single_weather_bar" data-id='${i}'>${
             el.village
           }<br>${el.country}<br>${res.hourly.temperature_2m[time.getHours()]}℃${
@@ -509,11 +503,6 @@ class App {
     )
       .then((res) => res.json())
       .then((res) => {
-        console.log(
-          res.results[0].components.village,
-          res.results[0].components.country,
-          res
-        );
         const pop = new Popup(
           popup_lat,
           popup_lng,
@@ -528,7 +517,7 @@ class App {
         const marker = L.marker([popup_lat, popup_lng]).addTo(this.#map);
         const find_user = this.#users.find((el) => el.id === id);
         marker.on("click", this.close_popup.bind(this, marker, find_user));
-        console.log(find_user);
+
         find_user.popups.push(pop);
         this.#setLocalStorage();
         this.#map_event = mapE;
@@ -536,12 +525,10 @@ class App {
       });
   }
   close_popup(marker, find_user) {
-    console.log(marker._latlng, find_user.popups);
     find_user.popups.forEach((el, i) => {
       if (marker._latlng.lng == el.lng && marker._latlng.lat == el.lat) {
         find_user.popups.splice(i, 1);
         marker.remove();
-        console.log(find_user.popups);
       }
     });
     this.display_popups_bar(find_user.id);
@@ -553,9 +540,9 @@ class App {
   switch_view(current_user, e) {
     if (e.target.classList.contains("single_weather_bar")) {
       const current_id = e.target.getAttribute("data-id");
-      console.log(current_id, current_user);
+
       const current_cords = current_user.popups[current_id];
-      console.log(current_cords);
+
       this.#map.setView(current_cords, this.#map_zoom_level, {
         animate: true,
         pan: {
@@ -605,44 +592,47 @@ class App {
           left_bar.insertAdjacentHTML("beforeend", left_bar_div);
         });
     });
-    // console.log(dane);
   }
   best_weather_fullfill() {
     this.#big_cities_cords.sort((a, b) => b.weather - a.weather);
-    console.log(this.#big_cities_cords);
-<<<<<<< Updated upstream
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 5; i++) {
       const html = `<div class="the_greatest_weather_single_div">
-      <div class="Miasto">${this.#big_cities_cords[i].city} <br><div class="temp">${this.#big_cities_cords[i].weather}c</div>
+      <div class="Miasto">${
+        this.#big_cities_cords[i].city
+      } <br><div class="temp">${this.#big_cities_cords[i].weather}c</div>
       </div>`;
       // html.style.backgroundImage=`url("${this.#big_cities_cords[i].city}.jpg")`
-      console.log(this.#big_cities_cords[i].city);
-      the_greatest_weather_div.insertAdjacentHTML("afterbegin", html);
-      document.querySelector('.the_greatest_weather_single_div').style.backgroundImage=`url('${this.#big_cities_cords[i].city}.jpg')`;
 
+      the_greatest_weather_div.insertAdjacentHTML("afterbegin", html);
+      document.querySelector(
+        ".the_greatest_weather_single_div"
+      ).style.backgroundImage = `url('${this.#big_cities_cords[i].city}.jpg')`;
     }
   }
-  scroll_to_right(e){
-    console.log(e);
-    document.querySelectorAll('.the_greatest_weather_single_div').forEach(el=>{
-       el.style.transform=`translateX(-100%)`; 
-    })
-  }
-  scroll_to_left(e){
-    console.log(e);
-    document.querySelectorAll('.the_greatest_weather_single_div').forEach(el=>{
-      el.style.transform=`translateX(100%)`; 
-   })
-    
-  }
-=======
-    for (let i = 0; i < 5; i++) {
-      console.log(this.#big_cities_cords[i]);
+  scroll_to_right(e) {
+    if (this.scrolling_level < 5) {
+      document
+        .querySelectorAll(".the_greatest_weather_single_div")
+        .forEach((el) => {
+          el.style.transform = `translateX(${this.scrolling_level * -100}%)`;
+        });
+      this.scrolling_level++;
     }
   }
->>>>>>> Stashed changes
+  scroll_to_left(e) {
+    if (this.scrolling_level > 0) {
+      this.scrolling_level--;
+
+      document
+        .querySelectorAll(".the_greatest_weather_single_div")
+        .forEach((el) => {
+          el.style.transform = `translateX(${this.scrolling_level * -100}%)`;
+        });
+    }
+  }
 }
+
 class User {
   id = Date.now();
   // #login;
@@ -654,7 +644,6 @@ class User {
     this.login = login;
     this.email = email;
     this.password = password;
-    console.log(this);
   }
 }
 class Popup {
