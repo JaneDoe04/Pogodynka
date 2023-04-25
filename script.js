@@ -13,6 +13,9 @@ const explaination_box = document.querySelector(".explanation_box");
 const sections = document.querySelectorAll("section");
 const logout_btn = document.querySelector(".logout");
 const user_name = document.querySelector("h5");
+const left_scroll = document.querySelector('.scroll_to_left');
+const right_scroll = document.querySelector('.scroll_to_right');
+
 const the_greatest_weather_div = document.querySelector(
   ".the_greatest_weather_div"
 );
@@ -139,6 +142,8 @@ class App {
   single_weather_bar = `<div class="single_weather_bar_city">Warszawa </div>`;
   constructor() {
     this.fullfill_left_bar();
+    left_scroll.addEventListener('click', this.scroll_to_left.bind(this));
+    right_scroll.addEventListener('click', this.scroll_to_right.bind(this));
     window.addEventListener("keydown", this.login_by_enter.bind(this));
     sections.forEach((section) => this.section_observer.observe(section));
     images.forEach((img) => this.imgObserver.observe(img));
@@ -602,9 +607,30 @@ class App {
   best_weather_fullfill() {
     this.#big_cities_cords.sort((a, b) => b.weather - a.weather);
     console.log(this.#big_cities_cords);
-    for (let i = 0; i < 5; i++) {
-      console.log(this.#big_cities_cords[i]);
+
+    for (let i = 0; i < 3; i++) {
+      const html = `<div class="the_greatest_weather_single_div">
+      <div class="Miasto">${this.#big_cities_cords[i].city} <br><div class="temp">${this.#big_cities_cords[i].weather}c</div>
+      </div>`;
+      // html.style.backgroundImage=`url("${this.#big_cities_cords[i].city}.jpg")`
+      console.log(this.#big_cities_cords[i].city);
+      the_greatest_weather_div.insertAdjacentHTML("afterbegin", html);
+      document.querySelector('.the_greatest_weather_single_div').style.backgroundImage=`url('${this.#big_cities_cords[i].city}.jpg')`;
+
     }
+  }
+  scroll_to_right(e){
+    console.log(e);
+    document.querySelectorAll('.the_greatest_weather_single_div').forEach(el=>{
+       el.style.transform=`translateX(-100%)`; 
+    })
+  }
+  scroll_to_left(e){
+    console.log(e);
+    document.querySelectorAll('.the_greatest_weather_single_div').forEach(el=>{
+      el.style.transform=`translateX(100%)`; 
+   })
+    
   }
 }
 class User {
